@@ -175,7 +175,21 @@ int zmk_usb_hid_send_mouse_report() {
     struct zmk_hid_mouse_report *report = zmk_hid_get_mouse_report();
     return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
 }
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif /* IS_ENABLED(CONFIG_ZMK_MOUSE)*/
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+int zmk_usb_hid_send_plover_report() {
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    if (hid_protocol == HID_PROTOCOL_BOOT) {
+        return -ENOTSUP;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+    struct zmk_hid_plover_report *report = zmk_hid_get_plover_report();
+    return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
 
 static int zmk_usb_hid_init(void) {
     hid_dev = device_get_binding("HID_0");
